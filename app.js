@@ -5,7 +5,7 @@ const express= require("express");
 const bodyParser=require("body-parser"); 
 const mongoose = require("mongoose"); 
 const app= express();
-var item=["BMW", "FORD","Nissan"];
+
 
 
 app.set("view engine", "ejs");
@@ -32,13 +32,7 @@ const item3 = new Item({
 });
 const defaultItems =  [item1, item2, item3];
 
-Item.insertMany(defaultItems, function(err){
-    if(err){
-        console.log(err);
-    }else{
-        console.log("Successfully Insert...");
-    }
-});
+
 
 
 
@@ -52,19 +46,36 @@ app.get("/", function(req, res){
     //     day:"numeric"
     // };
 
-    var day =today.toLocaleDateString("en-US", options);
+    Item.find({}, function(err, foundItems){
+        if(foundItems.length===0){
+            Item.insertMany(defaultItems, function(err){
+            if(err){
+                console.log(err);
+             }else{
+                console.log("Successfully Insert...");
+                res.redirect("/");
+            }
+});
+        }else{
+            res.render("list", {kindDay: "Today", newListItems: foundItems});
+        }
 
-    res.render("list", {kindDay: "Today", newListItems: item});
+
+        
+    })
+
+    
 
 });
 
 app.post("/", function(req, res){
-     var itemN=req.body.it1;
+     const itemName=req.body.it1;
      
-     item.push(itemN);
-    console.log(item);
-    
-    res.redirect("/");
+     const item = new Item({
+         name: itemName
+     });
+     item.save();
+     res.redirect("/");
 
 });
 
