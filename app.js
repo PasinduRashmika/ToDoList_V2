@@ -79,7 +79,14 @@ app.post("/", function(req, res){
 
 });
 
+app.post("/delete", function(req, res){
+    const checkItemId=req.body.checkbox;
 
+    Item.findByIdAndRemove(checkItemId, function(err){
+        console.log(err);
+    });
+    res.redirect("/");
+});
 
 app.listen(3000, function(){
     console.log("Server is running on port 3000");
