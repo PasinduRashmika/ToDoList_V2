@@ -92,12 +92,24 @@ app.get("/:customListName", function(req, res){
 
 app.post("/", function(req, res){
      const itemName=req.body.it1;
-     
+     const listName = req.body.list;
+
+
      const item = new Item({
          name: itemName
      });
-     item.save();
-     res.redirect("/");
+
+     if(listName === "Today"){
+            item.save();
+            res.redirect("/");
+     }else{
+         List.findOne({name: listName}, function(err, foundList){
+             foundList.items.push(item);
+             foundList.save();
+             re.redirect("/"+ listName);
+         })
+        }
+     
 
 });
 
@@ -116,3 +128,4 @@ app.listen(3000, function(){
     console.log("Server is running on port 3000");
 });
 
+ 
