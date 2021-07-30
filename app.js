@@ -5,6 +5,11 @@ const express= require("express");
 const bodyParser=require("body-parser"); 
 const mongoose = require("mongoose"); 
 const app= express();
+const dotenv = require("dotenv");
+
+dotenv.config({
+    path:"./config.env"
+})
 
 
 
@@ -13,7 +18,11 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:  true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true});
+mongoose.connect(
+    `mongodb+srv://admin-pasindu:${process.env.DBPASSWORD}@cluster0.wonjy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority/todolistDB`, 
+{useNewUrlParser: true}).then(()=>{
+    console.log("DB Connection Success.");
+});
 
 const itemsSchema = {
     name: String
